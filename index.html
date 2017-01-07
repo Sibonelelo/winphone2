@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link rel="manifest" href="manifest.json">
+
+    <!-- un-comment this code to enable service worker
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(() => console.log('service worker installed'))
+          .catch(err => console.log('Error', err));
+      }
+    </script>-->
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+
+    <!-- your app's js -->
+	<script src="js/jquery-1.11.2.min.js"></script>
+    <script src="js/app.js"></script>
+	<script type="text/javascript" src="js/ad_mob.js"></script>
+  </head>
+  <body ng-app="starter" ng-controller="articleCtrl">
+  <div id="downloadUpdate"  style="height:100%;">
+	<h1>Please update new version</h1><br/>
+	  <a href="http://www.channeldiski.com/download.php" class="button button-full button-calm" style="width:90%;margin:auto;">
+		  Download new version
+	  </a>
+  </div>
+  
+  <div id="loadDiv"  style="height:100%;">
+  <center>
+  <img ng-src="img/logo.png" style="width:80%;margin-top:20%;"><br/><br/>
+  <img id="loadingIndex" ng-src="img/loading.gif" style="width:15%;">
+  </center>
+	
+  </div>
+  <div id="bodyDiv">
+    <div ng-controller="MainCtrl">
+		<ion-nav-view animation="slide-left-right"></ion-nav-view>
+	</div>
+	
+	<script id="home.html" type="text/ng-template">
+		<ion-view>
+		    <ion-header-bar class="bar-header bar-positive">
+				  <h1 class="title">
+				  <img ng-src="img/logo.png" style="height:37px;float:left;">
+				  Channel Diski
+				  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+				  </h1>
+		    </ion-header-bar>    
+		  <ion-content on-scroll="getScrollPosition()"> 
+		  <div class="button-bar bar-stable">
+			<a class="button" href="#/liveMatch"><i class="icon ion-ios-football"></i></a>
+			<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+			<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+		  </div>
+		  Pull to refresh...
+		  <ion-refresher pulling-text="Pull to refresh..." on-refresh="loadMain()">
+		 </ion-refresher>
+		  <div class="list card" style="margin-top:-2px;">
+			<div class="list card">
+				<div class="item item-text-wrap">
+					<p>{{date}}</p>
+					<h4>{{title}}</h4>
+				</div>
+				  <div class="item item-body">
+					<img ng-if="image.length > 0" class="full-image" ng-src="http://www.channeldiski.com/{{image}}">
+					<p>
+					  {{story}}
+					</p>
+					<p><hr/>
+					  <a href="#" class="subdued" ng-click="likes()" style="margin-right:30px;">{{like}} <i class="icon ion-thumbsup"></i></a>
+					  <a href="#" class="subdued" ng-click="comment_function();" style="margin-right:30px;">{{no_comments}} <i class="icon ion-ios-chatboxes"></i></a>
+					  <a href="#" class="subdued" style="margin-right:30px;">{{hits}} <i class="icon ion-eye"></i></a>
+					</p>
+					<div id="comments_div">
+					<div class="bar-balanced">
+					<form name="commentForm" ng-submit="commentSubmit(content)">
+						<div class="item item-input-inset">
+							<label class="item-input-wrapper">
+							  <textarea type="text" placeholder="Type comment here..." id="contentId" ng-model="content"  style="width:100%;" required></textarea>
+							</label>
+							<button class="button button-small">
+							  Comment
+							</button>
+						</div>
+					</form>
+					</div>
+					  <div class="list">
+						<div class="item item-text-wrap" ng-repeat="articleComments in commentsRespo">
+						  <h2 style="margin-top:-4px;">{{articleComments.username}}:</h2>
+						  <p style="margin-top:-15px;">
+							{{articleComments.comment_body}}
+						  </p>
+						</div>
+					   </div>
+					</div>
+				  </div>
+				</div>
+			<div ng-controller="logCtrl">
+				<button class="button button-full button-energized" ng-click="getLog()">
+				  Click to view log...
+				</button>
+				<div id="logStanding">
+					<h4>MTN Premier league log</h4>
+					
+							<table style="width:100%; font-size:12px;">
+							<thead style="background:#999;color:#FFF;">
+							<tr>
+							<th>#</th>
+							<th>Team</th>
+							<th>P</th>
+							<th>W</th>
+							<th>D</th>
+							<th>L</th>
+							<th>GF</th>
+							<th>GA</th>
+							<th><abbr title="Goal Difference">GD</abbr></th>
+							<th>Pts</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr style="text-align:center;{{log.background}};" ng-repeat="log in logData" >
+							  <th>{{log.rank}}</th><td>{{log.team}}</td><td>{{log.played}}</td><td>{{log.win}}</td><td>{{log.draw}}</td><td>{{log.lost}}</td><td>{{log.goal_f}}</td><td>{{log.goal_a}}</td><td>{{log.goal_d}}</td><td>{{log.points}}</td>
+							</tr>
+							<tr>
+						</tbody>
+						</table>
+				</div>
+			</div><br/>
+			
+			<h4 style="">Previous stories</h4>
+			<div class="list">
+				<a class="item item-thumbnail-left item-text-wrap" href="#"  ng-repeat="lists in articleLists" ng-click="articleSearch({{lists.id}})">
+				  <img ng-if="lists.image.length > 0" ng-src="http://www.channeldiski.com/{{lists.image}}">
+					<h2>{{lists.title}}</h2>
+				</a>
+			</div>
+			<ion-infinite-scroll on-infinite="loadMore()" distance="1%">
+			</ion-infinite-scroll>
+			</div>
+		  </ion-content>
+		</ion-view>
+	</script><!-- END OF HOME PAGE -->
+  
+  <script id="menu.html" type="text/ng-template">
+    <ion-view>
+      <ion-header-bar class="bar-header bar-positive">
+		  <h1 class="title">
+		  <img ng-src="img/logo.png" style="height:37px;float:left;">
+		  Channel Diski
+		  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+		  </h1>
+	 </ion-header-bar>        
+      <ion-content>
+	  <div class="button-bar bar-stable">
+		<a class="button" href="#/"><i class="icon ion-ios-home"></i></a>
+		<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+	  </div>
+		<center>
+			<div id="loged_menu">
+			</div>
+			<div id="unloged_menu">
+				<a href="#/liveMatch" data-rel="close"><img ng-src="img/icons/live match.png" style="margin:10px 10px 10px 10px;" class = "img-rounded"></a> 
+				<!-- /<a href="#highlights" data-transition="pop" data-rel="close"><img ng-src="icons/highlights.png" style="margin:10px 10px 10px 10px;" class = "img-rounded"></a> -->
+				<a href="#channelS"  data-rel="close"><img ng-src="img/icons/CHANNEL-S.png" style="margin:10px 10px 10px 10px;" class = "img-rounded"></a>
+				<a href="#/tournament"  data-rel="close"><img ng-src="img/icons/fixture.png" style="margin:10px 10px 10px 10px;" class = "img-rounded"></a> 
+			<!-- / 	<a href="#teams" data-transition="pop" data-rel="close"><img ng-src="icons/teams.png" style="margin:10px 10px 10px 10px;" class = "img-rounded"></a> -->
+			    <a href="#/fans"  data-rel="close"><img ng-src="img/icons/fans.png" style="margin:10px 10px 10px 10px;" class = "img-rounded"></a>
+				<a href="#/prediction"  data-rel="close"><img ng-src="img/icons/prediction.png" style="margin:10px 10px 10px 10px;height:55px;" class = "img-rounded"></a>
+				<a href="#/points"  data-rel="close"><img ng-src="img/icons/points.png" style="margin:10px 10px 10px 10px;" class = "img-rounded"></a>
+				<a href="#/settings"  data-rel="close"><img ng-src="img/icons/settings.png" style="margin:10px 10px 10px 10px;" class = "img-rounded"></a>
+			</div>
+			</center>
+      </ion-content>
+    </ion-view>
+  </script> <!-- END OF MENU PAGE -->
+  
+  <script id="login.html" type="text/ng-template">
+    <ion-view ng-init="checkLogedUser()">
+      <ion-header-bar class="bar-header bar-positive">
+		  <h1 class="title" id="tes">
+		  <img ng-src="img/logo.png" style="height:37px;float:left;">
+		  Channel Diski
+		  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+		  </h1>
+	 </ion-header-bar>        
+      <ion-content>
+	  <div class="button-bar bar-stable">
+		<a class="button" href="#/"><i class="icon ion-ios-home"></i></a>
+		<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+	  </div>
+	  <div id="signInLoading"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
+        <div class="list" id="login_div">
+		<form name="commentForm" ng-submit="signInSubmit(loginUsername,loginPass)">
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Username</span>
+			<input type="text" placeholder="John" ng-model="loginUsername" required>
+		  </label>
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Password</span>
+			<input type="password" placeholder="************"  ng-model="loginPass" required>
+		  </label><br/>
+		  
+		  <div style="width:80%;margin:auto;color:#99CC00;">
+			<span style="cursor:pointer;" ng-click="signUp()">Create new account</span> | <span  style="cursor:pointer;" ng-click="fogottenPass()">Fogotten password</span>
+		  </div><br/>
+		  
+		  <button class="button button-full button-calm" style="width:90%;margin:auto;">
+			  Sign In
+		  </button>
+		 </form> 
+		 </div>
+		 
+		 <div class="list" id="signUp_div">
+		 <form name="commentForm" ng-submit="signUpSubmit(username_,phone,team,passwrd,conPasswrd,hints,hintReply)">
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Username</span>
+			<input type="text" placeholder="John" ng-model="username_" required>
+		  </label>
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Phone</span>
+			<input type="number" placeholder="76.." ng-model="phone" required>
+		  </label>
+			<label class="item item-input item-select">
+				<div class="input-label">Choose team:</div>
+				<select ng-model="team">
+				  <option ng-repeat="teamList in teamListRespo">{{teamList.team_name}}</option>
+				</select>
+			</label>
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Password</span>
+			<input type="password" placeholder="************" ng-model="passwrd" required>
+		  </label>
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Confirm password</span>
+			<input type="password" placeholder="************" ng-model="conPasswrd" required>
+		  </label>
+		  <label class="item item-input item-select">
+				<div class="input-label">Password hint:</div>
+				<select ng-model="hints">
+				  <option>My nick-name</option>
+				  <option>My pet name</option>
+				  <option>My favourite teacher</option>
+				  <option>My favourite food</option>
+				  <option>Customize hint</option>
+				  <option>Recover via email</option>
+				</select>
+			</label>
+			<label class="item item-input item-stacked-label">
+			   <span class="input-label">Password hint choice</span>
+			   <input type="text" placeholder="enter hint choice" ng-model="hintReply" required>
+		    </label><br/>
+		  
+		  
+		  <button class="button button-full button-calm" style="width:90%;margin:auto;">
+			  Sign Up
+		  </button>
+		</form> 
+		 </div>
+		 
+		  <div id="logeduser">
+			Singned in as {{user}} | <a href=""  ng-click="logout()">Logout</a>
+			<a href="#/admin" id="admin" style="width:100%;margin:auto;" class="button button-full button-calm" >
+			  Administrator controls
+		    </a>
+			<div class="list">
+			<a  class="item item-text-wrap" ng-repeat="notification in notificationRespo" href="#/{{notification.section}}" ng-if="notification.message.length > 0"  ng-click="notificationSeen(notification.id)">
+				<h2>{{notification.message}}</h2>
+			</a>
+			</div>
+		  </div>
+		  <div id="fogotten_pass">
+		  <h5 ng-if="recoverRespo.length > 0">My password hint: {{recoverRespo}}</h5>
+			<form name="hintForm" ng-submit="recoverSubmit(resetUsername,hintdata)">
+			  <label class="item item-input item-stacked-label">
+				<span class="input-label">Username</span>
+				<input type="text" placeholder="John" ng-model="resetUsername" required>
+			  </label>
+			  <div id="hintLabel">
+			  <label class="item item-input item-stacked-label">
+				<span class="input-label">Enter hit</span>
+				<input type="text" placeholder="hint" ng-model="hintdata">
+			  </label>
+			  </div><br/>
+			  <button class="button button-full button-calm" style="width:90%;margin:auto;">
+				  Recover
+			  </button>
+			 </form> 
+		  </div>
+      </ion-content>
+    </ion-view>
+  </script><!-- END OF LOGING PAGE -->
+  
+  <script id="liveMatch.html" type="text/ng-template">
+    <ion-view>
+      <ion-header-bar class="bar-header bar-positive">
+		  <h1 class="title" id="tes">
+		  <img ng-src="img/logo.png" style="height:37px;float:left;">
+		  Channel Diski
+		  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+		  </h1>
+	 </ion-header-bar> 
+      <ion-content>
+	  <div class="button-bar bar-stable">
+		<a class="button" href="#/"><i class="icon ion-ios-home"></i></a>
+		<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+	  </div>
+	  <div class="list" id="liveMatchLists">
+	  <div class="item item-text-wrap" ng-repeat="liveMatch in liveMatchRespo"  ng-click="getActiveMatch({{liveMatch.id}})">
+		  <h2 style="font-size:15px;">{{liveMatch.home}} vs {{liveMatch.away}}</h2>
+		  <p>
+			{{liveMatch.tournament}}
+		  </p>
+	   </div>
+	   </div>
+	   <div id="activeLiveMatch">
+	    <table style="width:100%;">
+		<thead style="background:#0099CC;color:#FFF;font-size:12px;">
+		<tr>
+		<th colspan="2"><img ng-src="http://www.channeldiski.com/channel-diski/{{activeMatchRespo[0].home_logo}}" style="height:37px;"/></th><td style="font-size:20px;">{{activeMatchRespo[0].played_time}}'</td><th  colspan="2"><img ng-src="http://www.channeldiski.com/channel-diski/{{activeMatchRespo[0].away_logo}}" style="height:37px;"/></th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr style="text-align:center;">
+		  <td style="background:#0066CC;color:#FFF;width:35%;">{{activeMatchRespo[0].home_team_name}}</td><td style="background:#000033;color:#FFF;font-size:30px;width:10%;">{{activeMatchRespo[0].home_score}}</td><td style="width:10%;">V</td><td style="background:#000033;color:#FFF;font-size:30px;width:10%;">{{activeMatchRespo[0].away_score}}</td><td style="background:#0066CC;color:#FFF;width:35%;">{{activeMatchRespo[0].away_team_name}}</td>
+		</tr>
+		<tr style="text-align:center;">
+		  <td colspan="5"><span  style="background:#0099CC;color:#FFF;font-size:17px;">{{activeMatchRespo[0].gamesStatus}}</span></td>
+		</tr>
+		</tbody>
+		</table><br/>
+		<div id="loadActiveMatch"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
+	    <div class="list">
+			<div class="button-bar">
+			  <a class="button" ng-click="closeCommentary()"><i class="icon ion-ios-close"></i></a>
+			  <a class="button" ng-click="loadnewCommentary()"><i class="icon ion-ios-refresh"></i></a>
+			</div>
+			<div class="item item-text-wrap" ng-repeat="commentary in activeMatchRespo" ng-if="commentary.played_time.length > 0">
+			  <p style="margin-top:-10px;text-align:center;">(Time: {{commentary.played_time}}min)</p>
+			  <h2>{{commentary.comments}}</h2>
+			  <p style="margin-bottom:7px;"><span style="float:left;" ng-if="commentary.home.length > 0"><img ng-src="http://www.channeldiski.com/channel-diski/{{commentary.home}}" style="height:15px;"/> {{commentary.player}}</span> <span style="float:right;" ng-if="commentary.away.length > 0"><img ng-src="http://www.channeldiski.com/channel-diski/{{commentary.away}}" style="height:15px;"/> {{commentary.player}}</span></p>
+		   </div>
+	   </div>
+	   <div class="bar-balanced">
+	   <form name="liveCommentForm" ng-submit="liveMatchUserComments()">
+			<div class="item item-input-inset">
+				<label class="item-input-wrapper">
+				  <textarea type="text" placeholder="Type comment here..." id="match_commetsText" ng-model="content"  style="width:100%;" required></textarea>
+				</label>
+				<button class="button button-small">
+				  Comment
+				</button>
+			</div>
+		</form>
+		</div>
+		<div class="list">
+		<div class="item item-text-wrap" ng-repeat="liveMatchComments in liveMatchCommentsRespo">
+		  <h2>{{liveMatchComments.username}}:</h2>
+		  <p>
+			{{liveMatchComments.comment}}
+		  </p>
+		</div>
+	   </div>
+	   </div>
+      </ion-content>
+    </ion-view>
+  </script><!-- END OF LIVE MATCH PAGE -->
+  
+  <script id="tournament.html" type="text/ng-template">
+    <ion-view>
+      <ion-header-bar class="bar-header bar-positive">
+		  <h1 class="title" id="tes">
+		  <img ng-src="img/logo.png" style="height:37px;float:left;">
+		  Channel Diski
+		  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+		  </h1>
+	 </ion-header-bar> 
+      <ion-content>
+	  <div class="button-bar bar-stable">
+		<a class="button" href="#/"><i class="icon ion-ios-home"></i></a>
+		<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+	  </div>
+		<div class="list" id="tournamentLists">
+		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('MTN Premier League')">
+			<img ng-src="http://www.channeldiski.com/channel-diski/img/MTN LOGO.png">
+			<h2>MTN Premier League</h2>
+			<p>View fixture,Top goal scorers and Results</p>
+		  </a>
+		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('Telecom Charity Cup')">
+			<img ng-src="http://www.channeldiski.com/channel-diski/img/charity.png">
+			<h2>Telecom Charity Cup</h2>
+			<p>View fixture,Top goal scorers and Results</p>
+		  </a>
+		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('SMVA Ingwenyama Cup')">
+			<img ng-src="http://www.channeldiski.com/channel-diski/img/ingwe.png">
+			<h2>SMVA Ingwenyama Cup</h2>
+			<p>View fixture,Top goal scorers and Results</p>
+		  </a>
+		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('Swazi Bank Cup')">
+			<img ng-src="http://www.channeldiski.com/channel-diski/img/SwaziBank Cup Logo.jpg">
+			<h2>Swazi Bank Cup</h2>
+			<p>View fixture,Top goal scorers and Results</p>
+		  </a>
+		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('Castle Premier Challenge')">
+			<img ng-src="http://www.channeldiski.com/channel-diski/img/castle logo.JPG">
+			<h2>Castle Premier Challenge</h2>
+			<p>View fixture,Top goal scorers and Results</p>
+		  </a>
+	   </div>
+	   
+	   <div id="tournamentDiv"> 
+	    <div class="bar bar-light">
+		  <a class="button" ng-click="tournamentBack()"><i class="icon ion-ios-undo"></i>back</a><h1 class="title">{{tournamentRespo[0].tournament}}</h1>
+		</div><br/><br/>
+		<div class="button-bar bar-stable">
+			<a class="button"  ng-click="fixtureDiv()"><i class="icon ion-clipboard"></i> Fixture</a>
+			<a class="button" ng-click="reultsDiv()"><i class="icon ion-ios-play"></i> Results</a>
+			<a class="button" ng-click="scorersDiv()"><i class="icon ion-android-walk"></i> Scorers</a>
+		</div>
+		<div id="loadtournament"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
+		<div id="fixture">
+		<div class="list">
+		<div class="item item-text-wrap" ng-repeat="tournaments in tournamentRespo">
+			<h3 style="margin-bottom:10px;">{{tournaments.home}} vs {{tournaments.away}}</h3>
+			<p>{{tournaments.play_date}} (Time: {{tournaments.play_time}})</p>
+			<p>Venue: {{tournaments.venue}}</p>
+		</div>
+		</div>
+		</div>
+		
+		<div id="results">
+		<div class="list">
+		<div class="item item-text-wrap" ng-repeat="results in resultsRespo">
+			<h3 style="margin-bottom:10px;">{{results.home}} {{results.home_score}}-{{results.away_score}} {{results.away}}</h3>
+			<p>{{results.play_date}}</p>
+		</div>
+		</div>
+		</div>
+	   </div>
+	   
+	   <div id="scorers">
+		<div class="list">
+		<div class="item item-text-wrap" ng-repeat="scores in scoresRespo">
+			<h2 style="margin-bottom:10px;">{{scores.rank}}. {{scores.player}}</h2>
+			<p>Goals: {{scores.goals}}</p>
+			<p>Team: {{scores.team}}</p>
+		</div>
+		</div>
+		</div>
+      </ion-content>
+    </ion-view>
+  </script><!-- END OF TOURNAMENT PAGE -->
+  
+  <script id="channelS.html" type="text/ng-template">
+    <ion-view ng-init="loadChannelS()">
+      <ion-header-bar class="bar-header bar-positive">
+		  <h1 class="title" id="tes">
+		  <img ng-src="img/logo.png" style="height:37px;float:left;">
+		  Channel Diski
+		  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+		  </h1>
+	 </ion-header-bar> 
+      <ion-content>
+	  <div class="button-bar bar-stable">
+		<a class="button" href="#/"><i class="icon ion-ios-home"></i></a>
+		<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+	  </div>
+	  <div class="button-bar bar-light">
+		<a class="button" href="" ng-click="newsList()">News</a>
+		<a class="button" href="" ng-click="lineUp()">line-Up</a>
+	  </div>
+	  <div id="newsList">
+	  <div id="news">
+	  <div id="channelSListLoad"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
+		<div class="list">
+		<a href="" class="item item-text-wrap"  ng-repeat="channelS in channelSRespo" ng-click="loadChannelSStory({{channelS.id}})">
+			<h2 style="margin-bottom:10px;">{{channelS.topic}}</h2>
+			<p ng-if="channelS.story_by.length > 0">By: {{channelS.story_by}}</p>
+		</a>
+		</div>
+	  </div>
+	  <div id="fullStory">
+	  <a class="button" ng-click="channelSStoryBack()"><i class="icon ion-ios-undo"></i>back</a>
+	  <div id="channelSStoryLoad"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
+		<div class="list card" style="margin-top:-0px;">
+			<div class="item item-text-wrap">
+				<p>{{channels_story_date}}</p>
+				<h2>{{channels_topic}}</h2>
+			</div>
+			  <div class="item item-body">
+				<img ng-if="channels_image.length > 0" class="full-image" ng-src="http://www.channeldiski.com/{{channels_image}}">
+				<p>
+				  {{channels_summary}}
+				</p>
+			</div>
+			<p ng-if="story_by.length > 0">By: {{story_by}}</p>
+	    </div>
+	 </div>
+	 </div>
+	 
+	 <div id="lineUp">
+	 <h4>Today's line-Up</h4>
+	 <div id="loadlineUp"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
+	 <div class="list">
+		<div class="item item-text-wrap"  ng-repeat="lineUp in lineUpRespo">
+			<h2 style="margin-bottom:10px;">{{lineUp.lineUp}}</h2>
+			<p>At: {{lineUp.time}}  {{lineUp.show_day}}</p>
+		</div>
+	 </div>
+	 </div>
+      </ion-content>
+    </ion-view>
+  </script><!-- END OF CHANNEL S PAGE -->
+  
+  <script id="prediction.html" type="text/ng-template">
+    <ion-view ng-init="prediction()">
+      <ion-header-bar class="bar-header bar-positive">
+		  <h1 class="title" id="tes">
+		  <img ng-src="img/logo.png" style="height:37px;float:left;">
+		  Channel Diski
+		  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+		  </h1>
+	 </ion-header-bar> 
+      <ion-content>
+	  <div class="button-bar bar-stable">
+		<a class="button" href="#/"><i class="icon ion-ios-home"></i></a>
+		<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+	  </div>
+	  <h5>{{predictionRespo.expiry_date}}</h5>
+	  <h5  ng-if="predictionRespo.expired.length > 0" style="background:#FF3300;color:#FFF;">{{predictionRespo.expired}}</h5><br/>
+	  <center>
+	  <div ng-if="predictionRespo.no_winner.length > 0">
+	  <h2>{{predictionRespo.no_winner}}</h2><br/><br/><hr>
+	  </div>
+	  <div ng-if="predictionRespo.winner.length > 0">
+	  <h2>{{predictionRespo.winner}}</h2><br/><br/><hr>
+	  </div>
+	  
+		<form name = 'pred' style="font-size:11px;" ng-if="predictionRespo.expired.length == 0" ng-submit="predictSubmit(predictionRespo.home_team,predictionRespo.away_team,home_pred,away_pred)">
+			<span>{{predictionRespo.home_team}}</span>
+			<select name="" id="home_pred" ng-model="home_pred">
+				<option value="0">0</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
+			</select>
+			
+			VS
+			
+			<select name="" id="away_pred" ng-model="away_pred">
+				<option value="0">0</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
+			</select>
+			<span>{{predictionRespo.away_team}}</span><br/><br/>
+			
+			<button class="button button-full button-calm" style="width:90%;margin:auto;">
+			  Predict
+		    </button>
+		</form>
+		</center>
+		
+		<h5>Prediction Board</h5>
+		<div class="list">
+		<div class="item item-text-wrap"  ng-repeat="prediction_board in prediction_boardRespo">
+			<h2 style="margin-bottom:10px;">{{prediction_board.rank}}. {{prediction_board.pred_username}}</h2>
+			<p>{{prediction_board.home_team}} {{prediction_board.home_score}} - {{prediction_board.away_score}} {{prediction_board.away_team}}</p>
+		</div>
+		</div>
+		
+		<h5>Prediction Terms & Conditions</h5><hr/>
+		<ul>
+			<li>1. You must be a registered user</li>
+			<li>2. There might be more than one correct prediction but only the first correct prediction will be considered as valid/winner</li>
+			<li>3. Prediction price will be worth Ticket price for that predicted game</li>
+			<li>4. Prediction price will be sent to your mobile money account/phone number you used when creating an account here</li>
+			<li>5. Prediction price will be sent within 24hrs after a winner has been announced</li>
+		</ul><br/>
+      </ion-content>
+    </ion-view>
+  </script><!-- END OF Prediction PAGE -->
+  
+  <script id="settings.html" type="text/ng-template">
+    <ion-view ng-init="checkLogedUser()">
+      <ion-header-bar class="bar-header bar-positive">
+		  <h1 class="title" id="tes">
+		  <img ng-src="img/logo.png" style="height:37px;float:left;">
+		  Channel Diski
+		  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+		  </h1>
+	 </ion-header-bar> 
+      <ion-content>
+	  <div class="button-bar bar-stable">
+		<a class="button" href="#/"><i class="icon ion-ios-home"></i></a>
+		<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+	  </div>
+	  <div id="settings">
+		<div class="list">
+		  <a class="item item-icon-left" href="" ng-click="profile()">
+			<i class="icon ion-android-person"></i>
+			Profile
+		  </a>
+
+		  <a class="item item-icon-left item-icon-right" href="http://www.channeldiski.com/channel-diski/contactus.php">
+			<i class="icon ion-chatbubble-working"></i>
+			Contact Us
+			<i class="icon ion-ios-telephone-outline"></i>
+		  </a>
+
+		  <a class="item item-icon-left" href="http://www.channeldiski.com/channel-diski/aboutus.php">
+			<i class="icon ion-android-warning"></i>
+			About Us
+		  </a>
+
+		  <a class="item item-icon-left" href="http://www.channeldiski.com/channel-diski/privacypolicies.php">
+			<i class="icon ion-ios-bookmarks"></i>
+			Terms & Privacy Policy
+		  </a>
+		</div>
+	  </div>
+	  <div id="profile">
+	  <a class="button" ng-click="profileBack()"><i class="icon ion-ios-undo"></i>back</a>
+		<form name="profileForm" ng-submit="profileSubmit(phoneNo)">
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Change phone no.</span>
+			<input type="number" placeholder="76..." ng-model="phoneNo" required>
+		  </label><br/>
+		  
+		  <button class="button button-full button-calm" style="width:90%;margin:auto;">
+			  Save changes
+		  </button>
+		</form><br/>
+		<h3>Add Favourite team</h3>
+		<form name="profForm" id="addTeam" ng-submit="addTeamSubmit(addteam)">
+		  <label class="item item-input item-select">
+				<div class="input-label">Choose team:</div>
+				<select ng-model="addteam">
+				  <option ng-repeat="teamList in teamListRespo">{{teamList.team_name}}</option>
+				</select>
+			</label><br/>
+		  
+		  <button class="button button-full button-calm" style="width:90%;margin:auto;">
+			  Add Team
+		  </button>
+		</form>
+	  </div>
+      </ion-content>
+    </ion-view>
+  </script><!-- END OF SETTINGS PAGE -->
+  
+  <script id="points.html" type="text/ng-template">
+    <ion-view ng-init="points()">
+      <ion-header-bar class="bar-header bar-positive">
+		  <h1 class="title" id="tes">
+		  <img ng-src="img/logo.png" style="height:37px;float:left;">
+		  Channel Diski
+		  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+		  </h1>
+	 </ion-header-bar> 
+      <ion-content>
+	  <div class="button-bar bar-stable">
+		<a class="button" href="#/"><i class="icon ion-ios-home"></i></a>
+		<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+	  </div>
+	  <h4>Points Leader Board</h4>
+	  <div class="list">
+	  <div id="pointsLoad"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
+		<div class="item item-text-wrap"  ng-repeat="points in pointsRespo">
+			<h2 style="margin-bottom:10px;">{{points.rank}}. {{points.leader_username}}</h2>
+			<p>Points: {{points.leader_points}}</p>
+		</div>
+	  </div>
+	  
+	  <h4>Benefits of being on top</h4>
+		<ol>
+		<li>1. Top users will be rewarded cash for being active</li>
+		<li>2. Rewards will be received via mobile money/airtime</li>
+		<li>3. Make sure the phone number you provided is correct</li>
+		</ol>
+		
+		<h4>How to earn points</h4>
+		<ol>
+		<li>1. Commenting on articles and live matches</li>
+		<li>2. Checking in everyday to get 20 points</li>
+		</ol>
+      </ion-content>
+    </ion-view>
+  </script><!-- END OF POINTS PAGE -->
+  
+  <script id="admin.html" type="text/ng-template">
+    <ion-view ng-init="getActiveMatchCommentary()">
+      <ion-header-bar class="bar-header bar-positive">
+		  <h1 class="title" id="tes">
+		  <img ng-src="img/logo.png" style="height:37px;float:left;">
+		  Channel Diski
+		  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+		  </h1>
+	 </ion-header-bar> 
+      <ion-content>
+	  <div class="button-bar bar-stable">
+		<a class="button" href="#/"><i class="icon ion-ios-home"></i></a>
+		<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+	  </div>
+	  <div id="liveMatchListsCommentary">
+		<div class="item item-text-wrap" ng-repeat="liveMatchCommentary in liveMatchCommentaryRespo"  ng-click="getActiveMatchSetId({{liveMatchCommentary.id}})">
+		  <h2 style="font-size:15px;">{{liveMatchCommentary.home}} vs {{liveMatchCommentary.away}}</h2>
+		  <p>
+			{{liveMatchCommentary.tournament}}
+		  </p>
+	   </div>
+	  </div>
+	  <div id="commentaryForm">
+	  <div id="commentaryLoad"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
+	  <form name="commentaryForm" ng-submit="commentarySubmit()">
+			<label class="item item-input item-select">
+				<div class="input-label">Status:</div>
+				<select id="status">
+				    <option value=""></option>
+					<option value="foul">Foul only</option>
+					<option value="corner">Corner kick</option>
+					<option value="goal">goal</option>
+					<option value="yellow">Yellow card</option>
+					<option value="red">Red card</option>
+					<option value="yell_n_red">Yellow & Red card</option>
+					<option value="injury">Injury</option>
+				</select>
+			</label>
+			<label class="item item-input item-select">
+				<div class="input-label">Team:</div>
+				<select id="team">
+					<option value=""></option>
+					<option value="team1">Home Team</option>
+					<option value="team2">Away Team</option>
+				</select>
+			</label>
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Player</span>
+			<input type="text" id="player" placeholder="Samba Jive">
+		  </label>
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Time</span>
+			<input type="number" placeholder="20" id="time" required>
+		  </label>
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Comment</span>
+			<textarea type="text" placeholder="What's happening?" id="comment"></textarea>
+		  </label><br/>
+		  <button class="button button-full button-calm" style="width:100%;margin:auto;">
+			  Save
+		  </button><br/>
+		</form>
+		<div class="button-bar bar-energized">
+			<a class="button" href="" ng-click="gameStatus('start')">Start</a>
+			<a class="button" href="" ng-click="gameStatus('Half Time')">Half Time</a>
+			<a class="button" href="" ng-click="gameStatus('Second Half')">2nd Time</a>
+		  </div>
+		  <div class="button-bar bar-royal">
+			<a class="button" href="" ng-click="gameStatus('Extra Time')">Extra time</a>
+			<a class="button" href="" ng-click="gameStatus('Penalties')">Penalties</a>
+			<a class="button" href="" ng-click="gameStatus('Full Time')">End Match</a>
+		  </div>
+       </div>		
+      </ion-content>
+    </ion-view>
+  </script><!-- END OF ADMIN PAGE -->
+  
+  <script id="fans.html" type="text/ng-template">
+    <ion-view ng-init="teamListCorner()">
+      <ion-header-bar class="bar-header bar-positive">
+		  <h1 class="title" id="tes">
+		  <img ng-src="img/logo.png" style="height:37px;float:left;">
+		  Channel Diski
+		  <img ng-src="img/slogo.png" style="height:37px;float:right;">
+		  </h1>
+	 </ion-header-bar> 
+      <ion-content>
+	  <div class="button-bar bar-stable">
+		<a class="button" href="#/"><i class="icon ion-ios-home"></i></a>
+		<a class="button" href="#/menu"><i class="icon ion-android-apps"></i></a>
+		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
+	  </div>
+	  <div id="teamFansLists">
+	   <div id="teamFansListsLoad"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
+	  <div class="list">
+		<div class="item item-text-wrap" ng-repeat="teamListCorner in teamListCornerRespo" ng-click="teamFan(teamListCorner.team_name)">
+			<h2>{{teamListCorner.team_name}}</h2>
+		</div>
+	  </div>
+	  </div>
+	  <div id="teamFansPosts">
+	   <a class="button" ng-click="teamFansPostsBack()"><i class="icon ion-ios-undo"></i>back</a>
+	   <div class="bar-balanced">
+		<form name="fansPostsForm"  ng-submit="fansPostsSubmit()">
+			<div class="item item-input-inset">
+				<label class="item-input-wrapper">
+				  <textarea type="text" placeholder="Post here..." id="fansPost" style="width:100%;" required></textarea>
+				</label>
+				<button class="button button-small">
+				  Post
+				</button>
+			</div>
+		</form>
+		</div>
+		<div class="list">
+			<a href="" class="item item-text-wrap" ng-repeat="teamPosts in teamPostsRespo"  ng-click="fansPost(teamPosts.id)">
+				<p>{{teamPosts.username}}:</p>
+				<h2>{{teamPosts.comments}}</h2><br/>
+				<p>Posted: {{teamPosts.posted_date}}</p>
+			</a>
+		</div>
+	  </div>
+	  <div id="fansPosts">
+	  <a class="button" ng-click="fansPostsBack()"><i class="icon ion-ios-undo"></i>back</a>
+		<h5 ng-if="fanCommentsRespo[0].by.length > 0">By: {{fanCommentsRespo[0].by}}</h5>
+		<p>{{fanCommentsRespo[0].post}}</p>
+		<div class="bar-balanced">
+		<form name="commentForm"  ng-submit="fansCommentsSubmit(fanCommentsRespo[0].fans_corner_id)">
+			<div class="item item-input-inset">
+				<label class="item-input-wrapper">
+				  <textarea type="text" placeholder="Comment here..." id="fansComment" style="width:100%;" required></textarea>
+				</label>
+				<button class="button button-small">
+				  Post
+				</button>
+			</div>
+		</form>
+		</div>
+		<div class="list">
+			<div class="item item-text-wrap" ng-repeat="fanComments in fanCommentsRespo" ng-if="fanComments.username.length > 0">
+				<h3>{{fanComments.username}}:</h3>
+				<p>{{fanComments.comment}}</p>
+			</div>
+		</div>
+		
+	  </div>
+      </ion-content>
+    </ion-view>
+  </script><!-- END OF FANS CORNER PAGE -->
+  </div>
+  </body>
+</html>
