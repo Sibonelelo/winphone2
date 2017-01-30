@@ -30,7 +30,7 @@
   font-weight: normal;
   font-style: normal; }
 
- #comments_div,#logStanding,#signUp_div,#logeduser,#signInLoading,#activeLiveMatch,#tournamentDiv,#results,#scorers,#fullStory,#lineUp,#profile,#admin,#commentaryForm,#teamFansPosts,#fansPosts,#bodyDiv,#commentaryLoad,#fogotten_pass,#hintLabel,#downloadUpdate{
+ #comments_div,#logStanding,#signUp_div,#logeduser,#signInLoading,#activeLiveMatch,#tournamentDiv,#results,#scorers,#fullStory,#lineUp,#profile,#admin,#commentaryForm,#teamFansPosts,#fansPosts,#bodyDiv,#commentaryLoad,#fogotten_pass,#hintLabel,#downloadUpdate,#liveMatchEditCommentary,#liveMatchEditForm,#teamFansPostsOpenChat{
  	display:none;
 }
   

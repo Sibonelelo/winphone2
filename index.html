@@ -37,7 +37,7 @@
   <body ng-app="starter" ng-controller="articleCtrl">
   <div id="downloadUpdate"  style="height:100%;">
 	<h1>Please update new version</h1><br/>
-	  <a href="http://www.channeldiski.com/download.php" class="button button-full button-calm" style="width:90%;margin:auto;">
+	  <a href="http://channeldiski.com/download.php" class="button button-full button-calm" style="width:90%;margin:auto;">
 		  Download new version
 	  </a>
   </div>
@@ -55,7 +55,7 @@
 	</div>
 	
 	<script id="home.html" type="text/ng-template">
-		<ion-view>
+		<ion-view  ng-init="loadMain()">
 		    <ion-header-bar class="bar-header bar-positive">
 				  <h1 class="title">
 				  <img ng-src="img/logo.png" style="height:37px;float:left;">
@@ -79,7 +79,7 @@
 					<h4>{{title}}</h4>
 				</div>
 				  <div class="item item-body">
-					<img ng-if="image.length > 0" class="full-image" ng-src="http://www.channeldiski.com/{{image}}">
+					<img ng-if="image.length > 0" class="full-image" ng-src="http://channeldiski.com/{{image}}">
 					<p>
 					  {{story}}
 					</p>
@@ -147,7 +147,7 @@
 			<h4 style="">Previous stories</h4>
 			<div class="list">
 				<a class="item item-thumbnail-left item-text-wrap" href="#"  ng-repeat="lists in articleLists" ng-click="articleSearch({{lists.id}})">
-				  <img ng-if="lists.image.length > 0" ng-src="http://www.channeldiski.com/{{lists.image}}">
+				  <img ng-if="lists.image.length > 0" ng-src="http://channeldiski.com/{{lists.image}}">
 					<h2>{{lists.title}}</h2>
 				</a>
 			</div>
@@ -310,7 +310,7 @@
   </script><!-- END OF LOGING PAGE -->
   
   <script id="liveMatch.html" type="text/ng-template">
-    <ion-view>
+    <ion-view ng-init="liveMatch()">
       <ion-header-bar class="bar-header bar-positive">
 		  <h1 class="title" id="tes">
 		  <img ng-src="img/logo.png" style="height:37px;float:left;">
@@ -325,6 +325,7 @@
 		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
 	  </div>
 	  <div class="list" id="liveMatchLists">
+	  <div id="liveMatchListsLoadings"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
 	  <div class="item item-text-wrap" ng-repeat="liveMatch in liveMatchRespo"  ng-click="getActiveMatch({{liveMatch.id}})">
 		  <h2 style="font-size:15px;">{{liveMatch.home}} vs {{liveMatch.away}}</h2>
 		  <p>
@@ -336,7 +337,7 @@
 	    <table style="width:100%;">
 		<thead style="background:#0099CC;color:#FFF;font-size:12px;">
 		<tr>
-		<th colspan="2"><img ng-src="http://www.channeldiski.com/channel-diski/{{activeMatchRespo[0].home_logo}}" style="height:37px;"/></th><td style="font-size:20px;">{{activeMatchRespo[0].played_time}}'</td><th  colspan="2"><img ng-src="http://www.channeldiski.com/channel-diski/{{activeMatchRespo[0].away_logo}}" style="height:37px;"/></th>
+		<th colspan="2"><img ng-src="http://channeldiski.com/channel-diski/{{activeMatchRespo[0].home_logo}}" style="height:37px;"/></th><td style="font-size:20px;">{{activeMatchRespo[0].played_time}}'</td><th  colspan="2"><img ng-src="http://channeldiski.com/channel-diski/{{activeMatchRespo[0].away_logo}}" style="height:37px;"/></th>
 		</tr>
 		</thead>
 		<tbody>
@@ -357,7 +358,7 @@
 			<div class="item item-text-wrap" ng-repeat="commentary in activeMatchRespo" ng-if="commentary.played_time.length > 0">
 			  <p style="margin-top:-10px;text-align:center;">(Time: {{commentary.played_time}}min)</p>
 			  <h2>{{commentary.comments}}</h2>
-			  <p style="margin-bottom:7px;"><span style="float:left;" ng-if="commentary.home.length > 0"><img ng-src="http://www.channeldiski.com/channel-diski/{{commentary.home}}" style="height:15px;"/> {{commentary.player}}</span> <span style="float:right;" ng-if="commentary.away.length > 0"><img ng-src="http://www.channeldiski.com/channel-diski/{{commentary.away}}" style="height:15px;"/> {{commentary.player}}</span></p>
+			  <p style="margin-bottom:7px;"><span style="float:left;" ng-if="commentary.home.length > 0"><img ng-src="http://channeldiski.com/channel-diski/{{commentary.home}}" style="height:15px;"/> {{commentary.player}}</span> <span style="float:right;" ng-if="commentary.away.length > 0"><img ng-src="http://channeldiski.com/channel-diski/{{commentary.away}}" style="height:15px;"/> {{commentary.player}}</span></p>
 		   </div>
 	   </div>
 	   <div class="bar-balanced">
@@ -402,27 +403,27 @@
 	  </div>
 		<div class="list" id="tournamentLists">
 		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('MTN Premier League')">
-			<img ng-src="http://www.channeldiski.com/channel-diski/img/MTN LOGO.png">
+			<img ng-src="img/MTN LOGO.png">
 			<h2>MTN Premier League</h2>
 			<p>View fixture,Top goal scorers and Results</p>
 		  </a>
 		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('Telecom Charity Cup')">
-			<img ng-src="http://www.channeldiski.com/channel-diski/img/charity.png">
+			<img ng-src="img/charity.png">
 			<h2>Telecom Charity Cup</h2>
 			<p>View fixture,Top goal scorers and Results</p>
 		  </a>
-		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('SMVA Ingwenyama Cup')">
-			<img ng-src="http://www.channeldiski.com/channel-diski/img/ingwe.png">
-			<h2>SMVA Ingwenyama Cup</h2>
+		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('SMVAF Ingwenyama Cup')">
+			<img ng-src="img/ingwe.png">
+			<h2>SMVAF Ingwenyama Cup</h2>
 			<p>View fixture,Top goal scorers and Results</p>
 		  </a>
 		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('Swazi Bank Cup')">
-			<img ng-src="http://www.channeldiski.com/channel-diski/img/SwaziBank Cup Logo.jpg">
+			<img ng-src="img/SwaziBank Cup Logo.jpg">
 			<h2>Swazi Bank Cup</h2>
 			<p>View fixture,Top goal scorers and Results</p>
 		  </a>
 		  <a class="item item-thumbnail-left item-text-wrap" href="" ng-click="tournamentFunction('Castle Premier Challenge')">
-			<img ng-src="http://www.channeldiski.com/channel-diski/img/castle logo.JPG">
+			<img ng-src="img/castle logo.JPG">
 			<h2>Castle Premier Challenge</h2>
 			<p>View fixture,Top goal scorers and Results</p>
 		  </a>
@@ -430,7 +431,8 @@
 	   
 	   <div id="tournamentDiv"> 
 	    <div class="bar bar-light">
-		  <a class="button" ng-click="tournamentBack()"><i class="icon ion-ios-undo"></i>back</a><h1 class="title">{{tournamentRespo[0].tournament}}</h1>
+		<div class="bar-balanced">
+		  <a class="button" ng-click="tournamentBack()"><i class="icon ion-ios-undo"></i>back</a></div><h1 class="title">{{tournamentRespo[0].tournament}}</h1>
 		</div><br/><br/>
 		<div class="button-bar bar-stable">
 			<a class="button"  ng-click="fixtureDiv()"><i class="icon ion-clipboard"></i> Fixture</a>
@@ -501,7 +503,9 @@
 		</div>
 	  </div>
 	  <div id="fullStory">
+	  <div class="bar-balanced">
 	  <a class="button" ng-click="channelSStoryBack()"><i class="icon ion-ios-undo"></i>back</a>
+	  </div>
 	  <div id="channelSStoryLoad"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
 		<div class="list card" style="margin-top:-0px;">
 			<div class="item item-text-wrap">
@@ -509,7 +513,7 @@
 				<h2>{{channels_topic}}</h2>
 			</div>
 			  <div class="item item-body">
-				<img ng-if="channels_image.length > 0" class="full-image" ng-src="http://www.channeldiski.com/{{channels_image}}">
+				<img ng-if="channels_image.length > 0" class="full-image" ng-src="http://channeldiski.com/{{channels_image}}">
 				<p>
 				  {{channels_summary}}
 				</p>
@@ -549,16 +553,22 @@
 		<a class="button" href="#/login"><i class="icon ion-android-contact"></i><span class="badge badge-assertive" ng-if="notificationRespo.length > 0">{{notificationRespo.length}}</span></a>
 	  </div>
 	  <h5>{{predictionRespo.expiry_date}}</h5>
-	  <h5  ng-if="predictionRespo.expired.length > 0" style="background:#FF3300;color:#FFF;">{{predictionRespo.expired}}</h5><br/>
+	  <h5  ng-if="predictionRespo.expired.length > 0" style="background:#FF3300;color:#FFF;">{{predictionRespo.expired}}</h5>
 	  <center>
-	  <div ng-if="predictionRespo.no_winner.length > 0">
-	  <h2>{{predictionRespo.no_winner}}</h2><br/><br/><hr>
+	  
+	  <div ng-if="predictionRespo.pred_over.length > 0 && predictionRespo.game_over.length == 0">
+	  <h2>Predictions are over</h2><br/><br/><hr>
 	  </div>
-	  <div ng-if="predictionRespo.winner.length > 0">
-	  <h2>{{predictionRespo.winner}}</h2><br/><br/><hr>
+	  <div ng-if="predictionRespo.game_over.length > 0 && predictionRespo.winner.length > 0">
+	  <h4>Winners</h4>
+	  <p>{{predictionRespo.winner}}</p>
+	  <br/><hr>
+	  </div>
+	  <div ng-if="predictionRespo.winner.length == 0 && predictionRespo.game_over.length > 0 && predictionRespo.pred_over.length > 0">
+	  <h2>All predictions were incorrect</h2><br/><br/><hr>
 	  </div>
 	  
-		<form name = 'pred' style="font-size:11px;" ng-if="predictionRespo.expired.length == 0" ng-submit="predictSubmit(predictionRespo.home_team,predictionRespo.away_team,home_pred,away_pred)">
+		<form name = 'pred' style="font-size:11px;" ng-if="predictionRespo.pred_over.length == 0" ng-submit="predictSubmit(predictionRespo.home_team,predictionRespo.away_team,home_pred,away_pred)">
 			<span>{{predictionRespo.home_team}}</span>
 			<select name="" id="home_pred" ng-model="home_pred">
 				<option value="0">0</option>
@@ -607,11 +617,12 @@
 		
 		<h5>Prediction Terms & Conditions</h5><hr/>
 		<ul>
-			<li>1. You must be a registered user</li>
-			<li>2. There might be more than one correct prediction but only the first correct prediction will be considered as valid/winner</li>
+			<li>1. You must be a registered and active user</li>
+			<li>2. You are only allowed to predict once</li>
 			<li>3. Prediction price will be worth Ticket price for that predicted game</li>
-			<li>4. Prediction price will be sent to your mobile money account/phone number you used when creating an account here</li>
-			<li>5. Prediction price will be sent within 24hrs after a winner has been announced</li>
+			<li>4. Prediction price will be sent via mobile money or airtime</li>
+			<li>5. Prediction price will be sent within 24hrs after winners have been declared</li>
+			<li>6. An automated raffle draw will be done for all correct predictions</li>
 		</ul><br/>
       </ion-content>
     </ion-view>
@@ -639,25 +650,27 @@
 			Profile
 		  </a>
 
-		  <a class="item item-icon-left item-icon-right" href="http://www.channeldiski.com/channel-diski/contactus.php">
+		  <a class="item item-icon-left item-icon-right" href="http://channeldiski.com/channel-diski/contactus.php">
 			<i class="icon ion-chatbubble-working"></i>
 			Contact Us
 			<i class="icon ion-ios-telephone-outline"></i>
 		  </a>
 
-		  <a class="item item-icon-left" href="http://www.channeldiski.com/channel-diski/aboutus.php">
+		  <a class="item item-icon-left" href="http://channeldiski.com/channel-diski/aboutus.php">
 			<i class="icon ion-android-warning"></i>
 			About Us
 		  </a>
 
-		  <a class="item item-icon-left" href="http://www.channeldiski.com/channel-diski/privacypolicies.php">
+		  <a class="item item-icon-left" href="http://channeldiski.com/channel-diski/privacypolicies.php">
 			<i class="icon ion-ios-bookmarks"></i>
 			Terms & Privacy Policy
 		  </a>
 		</div>
 	  </div>
-	  <div id="profile">
+	  <div id="profile" ng-click="teamListCorner">
+	  <div class="bar-balanced">
 	  <a class="button" ng-click="profileBack()"><i class="icon ion-ios-undo"></i>back</a>
+	  </div>
 		<form name="profileForm" ng-submit="profileSubmit(phoneNo)">
 		  <label class="item item-input item-stacked-label">
 			<span class="input-label">Change phone no.</span>
@@ -712,15 +725,22 @@
 	  
 	  <h4>Benefits of being on top</h4>
 		<ol>
-		<li>1. Top users will be rewarded cash for being active</li>
+		<li>1. Top users will be rewarded for being active</li>
 		<li>2. Rewards will be received via mobile money/airtime</li>
-		<li>3. Make sure the phone number you provided is correct</li>
 		</ol>
 		
 		<h4>How to earn points</h4>
 		<ol>
-		<li>1. Commenting on articles and live matches</li>
-		<li>2. Checking in everyday to get 20 points</li>
+		<li>1. By posting and commenting to any content</li>
+		<li>2. Daily visit is equal to 20 points</li>
+		<li>3. By completing daily/weekly tasks that will be given through our facebook page (make sure to check them everyday to earn more points)</li>
+		</ol>
+		
+		<h4>Terms & Conditions</h4>
+		<ol>
+		<li>1. 1000 points = E1</li>
+		<li>2. Make sure you have provided a correct phone number</li>
+		<li>3. Top 5 users will be rewarded once one of the users reach E100</li>
 		</ol>
       </ion-content>
     </ion-view>
@@ -751,6 +771,18 @@
 	  </div>
 	  <div id="commentaryForm">
 	  <div id="commentaryLoad"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
+	  <div class="bar-balanced">
+	   <form name="liveMatchEditor_" ng-submit="liveMatchEditor(sechByTime)">
+			<div class="item item-input-inset">
+				<label class="item-input-wrapper">
+				  <input type="number" id="sechByTime" ng-model="sechByTime"  style="width:100%;" required>
+				</label>
+				<button class="button button-small">
+				  search
+				</button>
+			</div>
+		</form>
+		</div>
 	  <form name="commentaryForm" ng-submit="commentarySubmit()">
 			<label class="item item-input item-select">
 				<div class="input-label">Status:</div>
@@ -799,7 +831,65 @@
 			<a class="button" href="" ng-click="gameStatus('Penalties')">Penalties</a>
 			<a class="button" href="" ng-click="gameStatus('Full Time')">End Match</a>
 		  </div>
-       </div>		
+       </div>	
+		<div id="liveMatchEditCommentary">
+		<div class="bar-balanced">
+		<a class="button" ng-click="liveMatchEditCommentaryBack()"><i class="icon ion-ios-undo"></i>back</a>
+		</div>
+		<div class="bar-balanced">
+			<form name="liveMatchEditorS" ng-submit="liveMatchEditorScore()">
+				<div class="item item-input-inset">
+					<label class="item-input-wrapper">
+					  <input type="number" id="homescore"  placeholder="Home" style="width:40%;" required>
+					</label>
+					
+					<label class="item-input-wrapper">
+					  <input type="number" id="awayscore"  placeholder="Away" style="width:40%;" required>
+					</label>
+					<button class="button button-small">
+					  edit
+					</button>
+				</div>
+			</form>
+		</div>
+		
+		<div class="item item-text-wrap" ng-repeat="commentaryEdit in commentaryEditRespo"  ng-click="getActiveMatchEditId({{commentaryEdit.id}})">
+		  <h2 style="font-size:15px;">{{commentaryEdit.comments}}</h2>
+		 
+		  <p ng-if="commentaryEdit.team.length > 0">Team: {{commentaryEdit.team}}</p> 
+		  <p ng-if="commentaryEdit.player.length > 0">Player: {{commentaryEdit.player}}</p> 
+		  <p ng-if="commentaryEdit.status.length > 0">Status: {{commentaryEdit.status}}</p> 
+		  <p ng-if="commentaryEdit.time.length > 0">Time: {{commentaryEdit.time}}</p>
+	   </div>
+	  </div>
+	  
+	  <div id="liveMatchEditForm">
+		<form name="liveMatchEditorF" ng-submit="liveMatchEditorForm()">
+			<label class="item item-input item-stacked-label">
+			<span class="input-label">Status</span>
+			<input type="text" id="statusE" placeholder="e.g foul,corner,goal,yellow,yell_n_red,injury">
+		  </label>
+			 <label class="item item-input item-stacked-label">
+			<span class="input-label">Team</span>
+			<input type="text" id="teamE" placeholder="e.g team1,team2">
+		  </label>
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Player</span>
+			<input type="text" id="playerE" placeholder="">
+		  </label>
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Time</span>
+			<input type="number" placeholder="" id="timeE">
+		  </label>
+		  <label class="item item-input item-stacked-label">
+			<span class="input-label">Comment</span>
+			<textarea type="text" placeholder="" id="commentE"></textarea>
+		  </label><br/>
+		  <button class="button button-full button-calm" style="width:100%;margin:auto;">
+			  Save
+		  </button><br/>
+		</form>
+	  </div>
       </ion-content>
     </ion-view>
   </script><!-- END OF ADMIN PAGE -->
@@ -822,13 +912,42 @@
 	  <div id="teamFansLists">
 	   <div id="teamFansListsLoad"><center><img ng-src='img/loading.gif' style='height:50px;'><center></div>
 	  <div class="list">
+		<div class="item item-text-wrap" ng-click="teamFanOpenChat('openChat')">
+			<h2>Open Chat</h2>
+		</div>
 		<div class="item item-text-wrap" ng-repeat="teamListCorner in teamListCornerRespo" ng-click="teamFan(teamListCorner.team_name)">
 			<h2>{{teamListCorner.team_name}}</h2>
 		</div>
 	  </div>
 	  </div>
+	  <div id="teamFansPostsOpenChat">
+	  <div class="bar-balanced">
+	   <a class="button" ng-click="teamFansPostsOpenChatBack()"><i class="icon ion-ios-undo"></i>back</a>
+	   </div>
+	   <div class="bar-balanced">
+		<form name="fansPostsForm"  ng-submit="fansPostsOpenChatSubmit()">
+			<div class="item item-input-inset">
+				<label class="item-input-wrapper">
+				  <textarea type="text" placeholder="Post here..." id="fansPostOpenChat" style="width:100%;" required></textarea>
+				</label>
+				<button class="button button-small">
+				  Post
+				</button>
+			</div>
+		</form>
+		</div>
+		<div class="list">
+			<a href="" class="item item-text-wrap" ng-repeat="teamPosts in teamPostsRespo"  ng-click="fansPost(teamPosts.id)">
+				<p>{{teamPosts.username}}:</p>
+				<h2>{{teamPosts.comments}}</h2><br/>
+				<p>Posted: {{teamPosts.posted_date}}</p>
+			</a>
+		</div>
+	  </div>
 	  <div id="teamFansPosts">
+	  <div class="bar-balanced">
 	   <a class="button" ng-click="teamFansPostsBack()"><i class="icon ion-ios-undo"></i>back</a>
+	   </div>
 	   <div class="bar-balanced">
 		<form name="fansPostsForm"  ng-submit="fansPostsSubmit()">
 			<div class="item item-input-inset">
@@ -850,7 +969,9 @@
 		</div>
 	  </div>
 	  <div id="fansPosts">
+	  <div class="bar-balanced">
 	  <a class="button" ng-click="fansPostsBack()"><i class="icon ion-ios-undo"></i>back</a>
+	  </div>
 		<h5 ng-if="fanCommentsRespo[0].by.length > 0">By: {{fanCommentsRespo[0].by}}</h5>
 		<p>{{fanCommentsRespo[0].post}}</p>
 		<div class="bar-balanced">
