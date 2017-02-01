@@ -14,45 +14,13 @@ app.run(function($ionicPlatform) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
 
       // Don't remove this line unless you know what you are doing. It stops the viewport
-      // from snapping when text inputs are focused. Ionic handles this internally for
+      // from snapping when text inputs are focused. Ionic handles this internally for notificationRespo
       // a much nicer keyboard experience.
       cordova.plugins.Keyboard.disableScroll(true);
     }
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
-	
-			setTimeout(getTheToken, 1000);
-			function getTheToken() {
-				FCMPlugin.getToken(
-					function (token) {
-						if (token == null) {
-							console.log("null token");
-							setTimeout(getTheToken, 1000);
-						} else {
-							window.localStorage.setItem("token",token);
-							console.log("I got the token: " + token);
-						}
-					},
-					function (err) {
-						console.log('error retrieving token: ' + err);
-					}
-				);
-			}
-			
-			FCMPlugin.onTokenRefresh(function(token){
-				window.localStorage.setItem("token",token);
-			});
-			
-			FCMPlugin.onNotification(function(data){
-				if(data.wasTapped){
-				  //Notification was received on device tray and tapped by the user.
-				  alert( JSON.stringify(data) );
-				}else{
-				  //Notification was received in foreground. Maybe the user needs to be notified.
-				  alert( JSON.stringify(data) );
-				}
-			});
 	
   });
   
@@ -941,6 +909,7 @@ app.controller('articleCtrl', function($scope, $http, $ionicScrollDelegate) {
 	
 	var notificationSuccess = function(response){
 		$scope.notificationRespo = response.data;
+		console.log($scope.notificationRespo)
 	};
 	
 	//notification function------------------------------------------------------------------------
