@@ -7,7 +7,7 @@
   <author email="info@channeldiski.com" href="http://channeldiski.com/">
       Channel Diski
   </author>
-  <preference name="windows-appx-target" value="8.1-phone" />
+  <preference name='windows-target-version' value='8.1' />
   <content src="index.html"/>
   <access origin="*"/>
   <preference name="webviewbounce" value="false"/>
